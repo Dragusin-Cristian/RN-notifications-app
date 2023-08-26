@@ -1,8 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Button, StyleSheet, View } from 'react-native';
+import { Button, StyleSheet, View, Platform, Alert } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
+import Constants from "expo-constants";
+
+//* docs here:  https://docs.expo.dev/versions/latest/sdk/notifications/
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -23,10 +26,12 @@ export default function App() {
     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
 
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      // console.log(notification.request.content.data);
       setNotification(notification);
     });
 
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      // console.log(notification.request.content.data);
     });
 
     return () => {
@@ -88,12 +93,14 @@ async function registerForPushNotificationsAsync() {
       finalStatus = status;
     }
     if (finalStatus !== 'granted') {
-      alert('Failed to get push token for push notification!');
+      Alert.alert('Permission required', 'Failed to get push token for push notification!');
       return;
     }
-    token = (await Notifications.getExpoPushTokenAsync()).data;
+    token = (await Notifications.getExpoPushTokenAsync({
+      projectId: Constants.expoConfig.extra.eas.projectId,
+    })).data;
   } else {
-    alert('Must use physical device for Push Notifications');
+    Alert.alert('Emulator not allowed', 'Must use physical device for Push Notifications');
   }
 
   return token;
