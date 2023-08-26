@@ -40,6 +40,22 @@ export default function App() {
     };
   }, []);
 
+  const sendPushNotification = () => {
+    //* This functionality should be triggered from our backend!
+    fetch('https://exp.host/--/api/v2/push/send',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          //* Here we should retrieve the token of the device we want to send to from the db, and use that
+          to: expoPushToken,
+          title: "Test - sent from a device",
+          body: "This is a test"
+        })
+      })
+  }
 
   return (
     <View style={styles.container}>
@@ -48,6 +64,10 @@ export default function App() {
         onPress={async () => {
           await schedulePushNotification();
         }} />
+      <Button
+        title='Send push notification'
+        onPress={sendPushNotification}
+      />
       <StatusBar style="auto" />
     </View>
   );
