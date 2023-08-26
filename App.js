@@ -6,6 +6,7 @@ import * as Device from 'expo-device';
 import Constants from "expo-constants";
 
 //* docs here:  https://docs.expo.dev/versions/latest/sdk/notifications/
+//* expo push notifications API:  https://expo.dev/notifications
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
